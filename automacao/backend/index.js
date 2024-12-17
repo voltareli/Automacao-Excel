@@ -84,7 +84,7 @@ const executarAutomacao = async (codigoNota, pagina) => {
     });
     await pagina.click('[title="Digite ou Utilize um leitor de código de barras ou QRCode"]');
 
-  await new Promise(resolve => setTimeout(resolve, 2000)); 
+  await new Promise(resolve => setTimeout(resolve, 2500)); 
 
 } catch (erro) {
   console.error(`Erro no processo: ${erro}`);
