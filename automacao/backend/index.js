@@ -74,7 +74,17 @@ const executarAutomacao = async (codigoNota, pagina) => {
 
     await pagina.waitForNavigation({ waitUntil: "networkidle2", timeout: 1000 });
 
-  await new Promise(resolve => setTimeout(resolve, 3000)); 
+    await pagina.click('[title="Digite ou Utilize um leitor de código de barras ou QRCode"]');
+    await pagina.evaluate(() => {
+      const input = document.querySelector('[title="Digite ou Utilize um leitor de código de barras ou QRCode"]');
+      if (input) {
+        input.value = "";
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+    await pagina.click('[title="Digite ou Utilize um leitor de código de barras ou QRCode"]');
+
+  await new Promise(resolve => setTimeout(resolve, 2000)); 
 
 } catch (erro) {
   console.error(`Erro no processo: ${erro}`);
