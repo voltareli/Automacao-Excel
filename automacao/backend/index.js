@@ -57,21 +57,28 @@ const executarAutomacao = async (codigoNota, pagina) => {
 
     await pagina.waitForSelector('[title="Digite ou Utilize um leitor de código de barras ou QRCode"]', {
       visible: true,
-      timeout: 7000,
+      timeout: 10000,
     });
 
-    await pagina.type('[title="Digite ou Utilize um leitor de código de barras ou QRCode"]', codigoNota, { delay: 200 });
+  
+    await pagina.evaluate((codigo) => {
+      const input = document.querySelector('[title="Digite ou Utilize um leitor de código de barras ou QRCode"]');
+      if (input) {
+        input.value = codigo;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    }, codigoNota);
 
-    await pagina.waitForSelector('[value="Salvar Nota]', { visible: true, timeout: 1000 });
-    await pagina.click('[value="Salvar Nota]');
+    await pagina.waitForSelector('[value="Salvar Nota"]', { visible: true, timeout: 1000});
+    await pagina.click('[value="Salvar Nota"]');
 
     await pagina.waitForNavigation({ waitUntil: "networkidle2", timeout: 1000 });
 
-    console.log(`Pesquisa realizada para: ${codigoNota}`);
+  await new Promise(resolve => setTimeout(resolve, 3000)); 
 
-  } catch (erro) {
-    console.error(`Erro no processo: ${erro}`);
-  }
+} catch (erro) {
+  console.error(`Erro no processo: ${erro}`);
+}
 };
 
 const excluirArquivosAntigos = (diretorio, tempoLimite) => {
@@ -102,7 +109,7 @@ app.post("/enviar-arquivo", upload.single("arquivo"), async (req, res) => {
 
     const { navegador, pagina } = await iniciarNavegador();
 
-    // Acessa a URL inicial para login
+   
     const urlInicial = "https://www.nfp.fazenda.sp.gov.br/login.aspx?ReturnUrl=%2fEntidadesFilantropicas%2fCadastroNotaEntidade.aspx";
     await pagina.goto(urlInicial, { waitUntil: "domcontentloaded" });
 
